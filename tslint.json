@@ -9,7 +9,7 @@
     "indent": [true, "tabs"],
     "label-position": true,
     "label-undefined": true,
-    "max-line-length": [true, 150],
+    "max-line-length": [true, 200],
     "no-arg": true,
     "no-bitwise": false,
     "no-console": [true,

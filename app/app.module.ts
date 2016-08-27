@@ -10,4 +10,6 @@ import { SocketService } from './socket.service';
 	providers:    [ SocketService ]
 })
 
-export class AppModule { }
+export class AppModule {
+	
+}

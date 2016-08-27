@@ -10,16 +10,8 @@ import { SocketService } from './socket.service';
 			#canvas
 		></canvas>
 	`
-	// 		<tr
-	// 			*ngFor="let row of boardArray; let i = index;"
-	// 			class="cell-row"
-	// 			[row_id]="i"
-	// 			[cellArray]="row"
-	// 		></tr>
-	// 
 })
 
-// tabindex="1"
 export class BoardComponent implements OnInit, OnDestroy {
 
 	constructor(private socketService: SocketService) {}
@@ -40,10 +32,12 @@ export class BoardComponent implements OnInit, OnDestroy {
 	thisPlayerColor = '#06f';
 	otherPlayerColor = '#ff0';
 	blankColor = '#111';
+	currentClicks = [];
 
 	onKeyUp = function(evt) {
 
 		if (evt.keyCode === 13) {
+			this.currentClicks = [];
 			this.socketService.startStop();
 		}
 
@@ -66,8 +60,15 @@ export class BoardComponent implements OnInit, OnDestroy {
 
 		this.connection = this.socketService.getCurrentBoard().subscribe(function(data) {
 
-			this.boardArray = data;
+			this.boardArray = data[0];
 			this.drawAll(this.boardArray);
+
+			if (this.player === 1 && data[1]) {
+				this.currentClicks = [];
+			}
+			if (this.player === 2 && data[2]) {
+				this.currentClicks = [];
+			}
 
 		}.bind(this));
 
@@ -90,9 +91,22 @@ export class BoardComponent implements OnInit, OnDestroy {
 
 	}
 
+	drawCell(cell, ctx, grad, rgba1, rgba2, rgba3, rgb, glow) {
+		grad = ctx.createRadialGradient(this.cellSize / 2 + cell.x, this.cellSize / 2 + cell.y, 0, this.cellSize / 2 + cell.x, this.cellSize / 2 + cell.y, 141.42 / 200 * this.cellSize);
+		grad.addColorStop(0, rgba1);
+		grad.addColorStop(0.1, rgba2);
+		grad.addColorStop(1, rgba3);
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		ctx.fillStyle = grad;
+		ctx.shadowBlur = this.cellSize * glow;
+		ctx.shadowColor = rgb;
+		ctx.fillRect(cell.x + this.cellSize * 0.05, cell.y + this.cellSize * 0.05, this.cellSize * 0.9, this.cellSize * 0.9);
+	}
+
 	drawAll(data) {
 
 		let ctx = this.canvas.nativeElement.getContext("2d");
+		let grad;
 		ctx.fillStyle = this.blankColor;
 		ctx.fillRect(0, 0, this.boardWidthpx, this.boardHeightpx);
 
@@ -100,25 +114,21 @@ export class BoardComponent implements OnInit, OnDestroy {
 			for (var x = 0; x < data[y].length; x++) {
 
 				if (data[y][x] !== 0) {
-					let radius = (this.boardWidthpx / this.boardWidth) / 2;
-					let fillColor;
 					let cell = {
 						x: (x * this.cellSize),
 						y: (y * this.cellSize)
 					};
-					ctx.beginPath();
-					ctx.arc(cell.x + radius, cell.y + radius, (this.boardWidthpx / this.boardWidth) / 2, 0, Math.PI * 2);
 
 					if (data[y][x] === 1) {
-						fillColor = this.player1Color;
+						this.drawCell(cell, ctx, grad, 'rgba(153,218,255,1)', 'rgba(153,218,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
+						// this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
+						// this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,0,224,1)', 'rgb(0, 0, 224)', 0.75);
 					} else if (data[y][x] === 2) {
-						fillColor = this.player2Color;
+						this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(255,0,0,1)', 'rgb(255, 0, 0)', 0.75);
 					} else if (data[y][x] === 3) {
-						fillColor = this.playerBothColor;
+						this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(128,0,128,1)', 'rgb(128, 0, 128)', 0.75);
 					}
 
-					ctx.fillStyle = fillColor;
-					ctx.fill();
 				}
 			}
 		}
@@ -138,56 +148,43 @@ export class BoardComponent implements OnInit, OnDestroy {
 		};
 
 		let ctx = this.canvas.nativeElement.getContext("2d");
+		let grad;
 		let cell = {
 			x: Math.floor(click.x / this.cellSize),
 			y: Math.floor(click.y / this.cellSize)
 		};
+		let cellpx = {
+			x: cell.x * this.cellSize,
+			y: cell.y * this.cellSize
+		};
 
-		if (this.player === 1) {
-			if (this.boardArray[cell.y][cell.x] === 0) {
-				fillColor = this.thisPlayerColor;
-			} else if (this.boardArray[cell.y][cell.x] === 1) {
-				fillColor = this.blankColor; // maybe the players can only create life?
-			} else if (this.boardArray[cell.y][cell.x] === 2) {
-				fillColor = this.playerBothColor;
-			} else if (this.boardArray[cell.y][cell.x] === 3) {
-				fillColor = this.otherPlayerColor;
+		if (this.currentClicks.indexOf(cell.x + ' ' + cell.y) === -1) {
+			this.currentClicks.push(cell.x + ' ' + cell.y);
+			if (this.player === 1) {
+				if (this.boardArray[cell.y][cell.x] === 0) {
+					this.drawCell(cellpx, ctx, grad, 'rgba(153,218,255,1)', 'rgba(153,218,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
+					// this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
+					// this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,0,224,1)', 'rgb(0, 0, 224)', 0.75);
+				} else if (this.boardArray[cell.y][cell.x] === 2) {
+					this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(128,0,128,1)', 'rgb(128, 0, 128)', 0.75);
+				} else if (this.boardArray[cell.y][cell.x] === 3) {
+					this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(255,0,0,1)', 'rgb(255, 0, 0)', 0.75);
+				}
+			} else if (this.player === 2) {
+				if (this.boardArray[cell.y][cell.x] === 0) {
+					this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(255,0,0,1)', 'rgb(255, 0, 0)', 0.75);
+				} else if (this.boardArray[cell.y][cell.x] === 1) {
+					this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(128,0,128,1)', 'rgb(128, 0, 128)', 0.75);
+				} else if (this.boardArray[cell.y][cell.x] === 3) {
+					this.drawCell(cellpx, ctx, grad, 'rgba(153,218,255,1)', 'rgba(153,218,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
+				}
 			}
-		} else if (this.player === 2) {
-			if (this.boardArray[cell.y][cell.x] === 0) {
-				fillColor = this.thisPlayerColor;
-			} else if (this.boardArray[cell.y][cell.x] === 1) {
-				fillColor = this.playerBothColor;
-			} else if (this.boardArray[cell.y][cell.x] === 2) {
-				fillColor = this.blankColor;
-			} else if (this.boardArray[cell.y][cell.x] === 3) {
-				fillColor = this.otherPlayerColor;
-			}
+			this.socketService.socket.emit('playerclick', {
+				x: cell.x,
+				y: cell.y
+			});
 		}
-
-		let radius = (this.boardWidthpx / this.boardWidth) / 2;
-		ctx.beginPath();
-		ctx.arc((cell.x * this.cellSize) + radius, (cell.y * this.cellSize) + radius, (this.boardWidthpx / this.boardWidth) / 2, 0, Math.PI * 2);
-		ctx.fillStyle = fillColor;
-		ctx.fill();
-
-		this.socketService.socket.emit('playerclick', {
-			x: cell.x,
-			y: cell.y
-		});
-
 	}
-
-	// onKeyUp(evt) {
-
-	// 	if (evt.keyCode === 32) {
-	// 		console.log(evt);
-	// 		evt.preventDefault();
-	// 		evt.stopPropagation();
-	// 		this.socketService.startStop();
-	// 	}
-
-	// }
 
 	canvasDraw() {
 

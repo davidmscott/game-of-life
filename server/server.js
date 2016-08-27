@@ -11,12 +11,12 @@ var players = {
 };
 var birthArray = [3];
 var liveArray = [3, 4];
-var speed = 500;
+var speed = 100;
 var gameType = 0;
 var gameLength = 60000;
 var boardSize = 0;
-var boardWidth = 80;
-var boardHeight = 60;
+var boardWidth = 40;
+var boardHeight = 30;
 
 // var util = require('util');
 
@@ -171,7 +171,7 @@ function update() {
 		}
 	}
 
-	io.emit('currentboard', displayBoard);
+	io.emit('currentboard', [displayBoard, running, running2]);
 
 }
 
