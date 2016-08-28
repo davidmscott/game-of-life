@@ -33,7 +33,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 	otherPlayerColor = '#ff0';
 	blankColor = '#111';
 	currentClicks = [];
-	roundToggle = false;
+	roundOngoing = false;
 
 	onKeyUp = function(evt) {
 
@@ -59,14 +59,14 @@ export class BoardComponent implements OnInit, OnDestroy {
 
 		}.bind(this));
 
-		this.socketService.socket.on('roundtoggle', function(data) {
+		this.socketService.socket.on('roundongoing', function(data) {
 
-			this.roundToggle = !this.roundToggle;
+			this.roundOngoing = data;
 
 		}.bind(this));
 
 		this.connection = this.socketService.getCurrentBoard().subscribe(function(data) {
-
+			console.log('currentboard');
 			this.boardArray = data[0];
 			this.drawAll(this.boardArray);
 
@@ -147,7 +147,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
 	onClick(evt) {
 
-		if (!this.roundToggle || this.player === 0) {
+		if (!this.roundOngoing || this.player === 0) {
 			return;
 		}
 

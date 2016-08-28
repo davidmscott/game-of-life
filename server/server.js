@@ -15,15 +15,12 @@ var birthArray = [3];
 var liveArray = [3, 4];
 var speed = 100;
 var gameType = 2;
-var gameLength = 60000;
+var gameLength = 30000;
 var lastTime;
 var roundStarted = false;
 var boardSize = 0;
 var boardWidth = 40;
 var boardHeight = 20;
-
-// var util = require('util');
-
 
 function clearBoards() {
 
@@ -82,21 +79,10 @@ app.use(session({
 	saveUninitialized: false
 }));
 
-//do this for every request
 app.use(function(req, res, next) {
 	console.log(req.url);
 	next();
 });
-
-// if we want to respond to GET requests for "/"
-// app.get("/", function(req, res) {
-// 	res.sendFile(__dirname + "../index.html");
-// });
-
-// if we want to respond to POST requests for "/api"
-// app.post("/api", function(req, res) {
-// 	res.send("success");
-// });
 
 io.on('connection', function(socket) {
 
@@ -165,9 +151,11 @@ io.on('connection', function(socket) {
 		roundStarted = true;
 		playerOneScore = 0;
 		playerTwoScore = 0;
+		running = false;
+		running2 = false;
 		timer = gameLength;
-		io.emit('roundtoggle', {});
-		socket.emit('initialboard', [boardDetails, player]);
+		io.emit('roundongoing', true);
+		io.emit('currentboard', [displayBoard, running, running2, playerOneScore, playerTwoScore]);
 
 	});
 
@@ -196,7 +184,7 @@ function update() {
 				running = false;
 				running2 = false;
 				roundStarted = false;
-				io.emit('roundtoggle', {});
+				io.emit('roundongoing', false);
 				roundOutcome();
 			}
 		}
@@ -372,9 +360,6 @@ function roundOutcome() {
 		console.log("it's a tie");
 	}
 }
-
-// if we want to serve static files out of ./public
-// app.use(express.static("public"));
 
 server.listen(8000, function() {
 	console.log('Listening on port 8000');

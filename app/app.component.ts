@@ -5,7 +5,7 @@ declare var io: any; // this allows global variable to exist inside this file
 
 @Component({
 	selector: 'my-app',
-	directives: [BoardComponent, ScoreComponent, TimerComponent, StartRoundComponent],
+	directives: [BoardComponent, ScoreComponent, TimerComponent, StartRoundComponent, MenuComponent],
 	styles: [``],
 	template: `
 		<board></board>
@@ -13,6 +13,7 @@ declare var io: any; // this allows global variable to exist inside this file
 		<timer></timer>
 		<start-round></start-round>
 		<score></score>
+		<menu></menu>
 	`
 })
 

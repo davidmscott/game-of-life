@@ -10,9 +10,16 @@ import { SocketService } from './socket.service';
 	`],
 	template: `
 		<div
-			*ngIf="display"
+			*ngIf="showStartButton"
 			(click)="startRound()"
-		>Start Round</div>
+		>
+			Start Round
+		</div>
+		<div
+			*ngIf="showWaitingMsg"
+		>
+			Waiting for Player 1 to start round...
+		</div>
 	`
 })
 
@@ -22,12 +29,14 @@ export class StartRoundComponent {
 
 	connection;
 
-	display = true;
+	showStartButton = false;
+	showWaitingMsg = false;
+
+	player1 = true;
 
 	startRound() {
 
 		this.socketService.socket.emit('begingame', {});
-		this.display = false;
 
 	}
 
@@ -35,10 +44,34 @@ export class StartRoundComponent {
 	ngOnInit() {
 
 		this.connection = this.socketService.getTime().subscribe(function(data) {
-			console.log(data);
-			if (data === 0) {
-				this.display = true;
+
+			if (data === 0 && this.player1) {
+				this.showStartButton = true;
+			} else if (data === 0 && !this.player1) {
+				this.showWaitingMsg = true;
 			}
+
+		}.bind(this));
+
+		this.socketService.socket.on('initialboard', function(data) {
+
+			if (data[1] === 1) {
+				this.player1 = true;
+				this.showStartButton = true;
+			} else {
+				this.player1 = false;
+				this.showWaitingMsg = true;
+			}
+
+		}.bind(this));
+
+		this.socketService.socket.on('roundongoing', function(data) {
+
+			if (data) {
+				this.showStartButton = false;
+				this.showWaitingMsg = false;
+			}
+
 		}.bind(this));
 	}
 
