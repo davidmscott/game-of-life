@@ -9,31 +9,48 @@ var players = {
 	player1: false,
 	player2: false
 };
+var playerOneScore = 0;
+var playerTwoScore = 0;
 var birthArray = [3];
 var liveArray = [3, 4];
 var speed = 100;
 var gameType = 0;
-var gameLength = 60000;
+var gameLength = 10000;
+var lastTime;
+var roundStarted = false;
 var boardSize = 0;
 var boardWidth = 40;
-var boardHeight = 30;
+var boardHeight = 20;
 
 // var util = require('util');
 
-for (var height = 0; height < boardHeight; height++) {
-	currentBoard.push([]);
-	currentBoard2.push([]);
-	nextBoard.push([]);
-	nextBoard2.push([]);
-	displayBoard.push([]);
-	for (var width = 0; width < boardWidth; width++) {
-		currentBoard[height].push(0);
-		currentBoard2[height].push(0);
-		nextBoard[height].push(0);
-		nextBoard2[height].push(0);
-		displayBoard[height].push(0);
+
+function clearBoards() {
+
+	currentBoard = [];
+	currentBoard2 = [];
+	nextBoard = [];
+	nextBoard2 = [];
+	displayBoard = [];
+
+	for (var height = 0; height < boardHeight; height++) {
+		currentBoard.push([]);
+		currentBoard2.push([]);
+		nextBoard.push([]);
+		nextBoard2.push([]);
+		displayBoard.push([]);
+		for (var width = 0; width < boardWidth; width++) {
+			currentBoard[height].push(0);
+			currentBoard2[height].push(0);
+			nextBoard[height].push(0);
+			nextBoard2[height].push(0);
+			displayBoard[height].push(0);
+		}
 	}
+
 }
+
+clearBoards();
 
 var boardDetails = {
 	currentBoard: displayBoard,
@@ -139,15 +156,53 @@ io.on('connection', function(socket) {
 
 	});
 
+	socket.on('begingame', function() {
+
+		clearBoards();
+		roundStarted = true;
+		playerOneScore = 0;
+		playerTwoScore = 0;
+		timer = gameLength;
+		io.emit('roundtoggle', {});
+		socket.emit('initialboard', [boardDetails, player]);
+
+	});
+
 });
 
 setInterval(function() {
+
 	update();
+
 }, speed);
 
 function update() {
 
-	if (!(running || running2)) {
+	if (roundStarted) {
+
+		if (!lastTime) {
+			lastTime = gameLength / 1000;
+		}
+
+		timer -= speed;
+
+		if (lastTime > Math.ceil(timer / 1000)) {
+			lastTime = Math.ceil(timer / 1000);
+			io.emit('gameclock', lastTime);
+			if (lastTime === 0) {
+				running = false;
+				running2 = false;
+				roundStarted = false;
+				io.emit('roundtoggle', {});
+				roundOutcome();
+			}
+		}
+
+		if (!(running || running2)) {
+			return;
+		}
+
+	} else {
 		return;
 	}
 
@@ -171,7 +226,9 @@ function update() {
 		}
 	}
 
-	io.emit('currentboard', [displayBoard, running, running2]);
+	score();
+
+	io.emit('currentboard', [displayBoard, running, running2, playerOneScore, playerTwoScore]);
 
 }
 
@@ -222,6 +279,74 @@ function generateNextBoard(isRunning, current, next, player) {
 
 	}
 
+}
+
+function score() {
+
+	var y = 0;
+	var x = 0;
+
+	if (gameType === 0) {
+		for (y = 0; y < boardHeight; y++) {
+			for (x = 0; x < boardWidth; x++) {
+				if (displayBoard[y][x] === 1 && running) {
+					playerOneScore++;
+				} else if (displayBoard[y][x] === 2 && running2) {
+					playerTwoScore++;
+				} else if (displayBoard[y][x] === 3) {
+					if (running) {
+						playerOneScore++;
+					}
+					if (running2) {
+						playerTwoScore++;
+					}
+				}
+			}
+		}
+	} else if (gameType === 1) {
+		for (y = 0; y < boardHeight; y++) {
+			for (x = 0; i < boardWidth.length; x = x + boardWidth.length - 1) {
+				if (displayBoard[y][x] === 1 && running && x !== 0) {
+					playerOneScore++;
+				} else if (displayBoard[y][x] === 2 && running2 && x === 0) {
+					playerTwoScore++;
+				} else if (displayBoard[y][x] === 3) {
+					if (running && x !== 0) {
+						playerOneScore++;
+					}
+					if (running2 && x === 0) {
+						playerTwoScore++;
+					}
+				}
+			}
+		}
+	} else if (gameType === 2) {
+		playerOneScore = 0;
+		playerTwoScore = 0;
+		for (y = 0; y < boardHeight; y++) {
+			for (x = 0; x < boardWidth; x++) {
+				if (displayBoard[y][x] === 1) {
+					playerOneScore++;
+				} else if (displayBoard[y][x] === 2) {
+					playerTwoScore++;
+				} else if (displayBoard[y][x] === 3) {
+					playerOneScore++;
+					playerTwoScore++;
+				}
+			}
+		}
+	}
+
+}
+
+function roundOutcome() {
+	if (playerOneScore > playerTwoScore) {
+		console.log('player 1 wins');
+	} else if (playerOneScore < playerTwoScore) {
+		console.log('player 2 wins');
+	} else {
+		console.log("it's a tie");
+	}
 }
 
 // if we want to serve static files out of ./public

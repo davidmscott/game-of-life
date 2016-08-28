@@ -29,6 +29,19 @@ export class SocketService {
 
 	}
 
+	getTime() {
+
+		let socket = this.socket;
+		let observable = new Observable(function(observer) {
+			socket.on('gameclock', function(data) {
+				observer.next(data);
+			});
+		});
+
+		return observable;
+
+	}
+
 	startStop() {
 
 		this.socket.emit('startstop', {});
