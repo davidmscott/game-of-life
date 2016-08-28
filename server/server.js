@@ -14,8 +14,8 @@ var playerTwoScore = 0;
 var birthArray = [3];
 var liveArray = [3, 4];
 var speed = 100;
-var gameType = 0;
-var gameLength = 10000;
+var gameType = 2;
+var gameLength = 60000;
 var lastTime;
 var roundStarted = false;
 var boardSize = 0;
@@ -32,6 +32,7 @@ function clearBoards() {
 	nextBoard = [];
 	nextBoard2 = [];
 	displayBoard = [];
+	displayBoardgame2 = [];
 
 	for (var height = 0; height < boardHeight; height++) {
 		currentBoard.push([]);
@@ -39,12 +40,14 @@ function clearBoards() {
 		nextBoard.push([]);
 		nextBoard2.push([]);
 		displayBoard.push([]);
+		displayBoardgame2.push([]);
 		for (var width = 0; width < boardWidth; width++) {
 			currentBoard[height].push(0);
 			currentBoard2[height].push(0);
 			nextBoard[height].push(0);
 			nextBoard2[height].push(0);
 			displayBoard[height].push(0);
+			displayBoardgame2[height].push(0);
 		}
 	}
 
@@ -212,8 +215,11 @@ function update() {
 
 	generateNextBoard(running2, currentBoard2, nextBoard2, 2);
 
-	for (var y = 0; y < boardHeight; y++) {
-		for (var x = 0; x < boardWidth; x++) {
+	var y = 0;
+	var x = 0;
+
+	for (y = 0; y < boardHeight; y++) {
+		for (x = 0; x < boardWidth; x++) {
 			if (currentBoard[y][x] === 0 && currentBoard2[y][x] === 0) {
 				displayBoard[y][x] = 0;
 			} else if (currentBoard[y][x] === 1 && currentBoard2[y][x] === 0) {
@@ -226,9 +232,27 @@ function update() {
 		}
 	}
 
+	if (gameType === 2) {
+		for (y = 0; y < boardHeight; y++) {
+			for (x = 0; x < boardWidth; x++) {
+				if ([1, 2, 3].indexOf(displayBoard[y][x]) !== -1) {
+					displayBoardgame2[y][x] = displayBoard[y][x];
+				} else if (displayBoardgame2[y][x] === 1) {
+					displayBoardgame2[y][x] = 4;
+				} else if (displayBoardgame2[y][x] === 2) {
+					displayBoardgame2[y][x] = 5;
+				}
+			}
+		}
+	}
+
 	score();
 
-	io.emit('currentboard', [displayBoard, running, running2, playerOneScore, playerTwoScore]);
+	if (gameType === 2) {
+		io.emit('currentboard', [displayBoardgame2, running, running2, playerOneScore, playerTwoScore]);
+	} else {
+		io.emit('currentboard', [displayBoard, running, running2, playerOneScore, playerTwoScore]);
+	}
 
 }
 
@@ -305,7 +329,7 @@ function score() {
 		}
 	} else if (gameType === 1) {
 		for (y = 0; y < boardHeight; y++) {
-			for (x = 0; i < boardWidth.length; x = x + boardWidth.length - 1) {
+			for (x = 0; x < boardWidth; x = x + boardWidth - 1) {
 				if (displayBoard[y][x] === 1 && running && x !== 0) {
 					playerOneScore++;
 				} else if (displayBoard[y][x] === 2 && running2 && x === 0) {
@@ -325,11 +349,11 @@ function score() {
 		playerTwoScore = 0;
 		for (y = 0; y < boardHeight; y++) {
 			for (x = 0; x < boardWidth; x++) {
-				if (displayBoard[y][x] === 1) {
+				if (displayBoardgame2[y][x] === 1 || displayBoardgame2[y][x] === 4) {
 					playerOneScore++;
-				} else if (displayBoard[y][x] === 2) {
+				} else if (displayBoardgame2[y][x] === 2 || displayBoardgame2[y][x] === 5) {
 					playerTwoScore++;
-				} else if (displayBoard[y][x] === 3) {
+				} else if (displayBoardgame2[y][x] === 3) {
 					playerOneScore++;
 					playerTwoScore++;
 				}

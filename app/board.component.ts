@@ -134,6 +134,10 @@ export class BoardComponent implements OnInit, OnDestroy {
 						this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(255,0,0,1)', 'rgb(255, 0, 0)', 0.75);
 					} else if (data[y][x] === 3) {
 						this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(128,0,128,1)', 'rgb(128, 0, 128)', 0.75);
+					} else if (data[y][x] === 4) {
+						this.drawCell(cell, ctx, grad, 'rgba(153,218,255,0.25)', 'rgba(153,218,255,0.25)', 'rgba(0,128,128,0.25)', 'rgb(0, 128, 128)', 0.25);
+					} else if (data[y][x] === 5) {
+						this.drawCell(cell, ctx, grad, 'rgba(255,255,255,0.25)', 'rgba(255,255,255,0.25)', 'rgba(255,0,0,0.25)', 'rgb(255, 0, 0)', 0.25);
 					}
 
 				}
@@ -142,8 +146,6 @@ export class BoardComponent implements OnInit, OnDestroy {
 	}
 
 	onClick(evt) {
-
-		console.log(this.roundToggle);
 
 		if (!this.roundToggle || this.player === 0) {
 			return;
