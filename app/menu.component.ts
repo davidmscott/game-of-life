@@ -3,15 +3,13 @@ import { SocketService } from './socket.service';
 
 @Component({
 	selector: 'menu',
-	styles: [``],
+	styles: [`
+		div {
+			opacity: 0.5;
+		}
+	`],
 	template: `
 		<div
-			(click)="optionsButton()"
-		>
-			Options
-		</div>
-		<div
-			*ngIf="showMenu"
 		>
 			Menu Display
 		</div>
@@ -19,13 +17,5 @@ import { SocketService } from './socket.service';
 })
 
 export class MenuComponent {
-
-	showMenu = false;
-
-	optionsButton() {
-
-		this.showMenu = !this.showMenu;
-
-	}
 
 }

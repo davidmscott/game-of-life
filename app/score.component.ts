@@ -3,11 +3,32 @@ import { SocketService } from './socket.service';
 
 @Component({
 	selector: 'score',
-	styles: [``],
+	styles: [`
+		.playerscore {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+		}
+		.player1box {
+			position: relative;
+			width: 25%;
+			float: left;
+		}
+		.player2box {
+			position: relative;
+			width: 25%;
+			float: right;
+		}
+	`],
 	template: `
 		<div>
-			<div>Player 1: {{playerOneScore}}</div>
-			<div>Player 2: {{playerTwoScore}}</div>
+			<div class="player1box">
+				<div class="playerscore">Player 1: {{playerOneScore}}</div>
+			</div>
+			<div class="player2box">
+				<div class="playerscore">Player 2: {{playerTwoScore}}</div>
+			</div>
 		</div>
 	`
 })

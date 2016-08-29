@@ -21,6 +21,8 @@ var roundStarted = false;
 var boardSize = 0;
 var boardWidth = 40;
 var boardHeight = 20;
+var countdown = 5000;
+var speedSave = 0;
 
 function clearBoards() {
 
@@ -154,6 +156,7 @@ io.on('connection', function(socket) {
 		running = false;
 		running2 = false;
 		timer = gameLength;
+		countdown = 5000;
 		io.emit('roundongoing', true);
 		io.emit('currentboard', [displayBoard, running, running2, playerOneScore, playerTwoScore]);
 
@@ -168,6 +171,11 @@ setInterval(function() {
 }, speed);
 
 function update() {
+
+	roundCountdown();
+	if (countdown) {
+		return;
+	}
 
 	if (roundStarted) {
 
@@ -351,12 +359,36 @@ function score() {
 
 }
 
+function roundCountdown() {
+
+	if (countdown) {
+		if (countdown <= 1000) {
+			io.emit('countdown', false);
+			countdown = 0;
+			return;
+		} else if (countdown <= 2000) {
+			io.emit('countdown', 'GO!');
+		} else if (countdown <= 3000) {
+			io.emit('countdown', '1');
+		} else if (countdown <= 4000) {
+			io.emit('countdown', '2');
+		} else if (countdown <= 5000) {
+			io.emit('countdown', '3');
+		}
+		countdown -= speed;
+	}
+
+}
+
 function roundOutcome() {
 	if (playerOneScore > playerTwoScore) {
+		io.emit('winner', 'PLAYER 1 WINS!');
 		console.log('player 1 wins');
 	} else if (playerOneScore < playerTwoScore) {
+		io.emit('winner', 'PLAYER 2 WINS!');
 		console.log('player 2 wins');
 	} else {
+		io.emit('winner', "IT'S A TIE!");
 		console.log("it's a tie");
 	}
 }

@@ -42,6 +42,33 @@ export class SocketService {
 
 	}
 
+	runCountdown() {
+
+		let socket = this.socket;
+		let observable = new Observable(function(observer) {
+			socket.on('countdown', function(data) {
+				observer.next(data);
+			});
+		});
+
+		return observable;
+
+	}
+
+
+	winnerIs() {
+
+		let socket = this.socket;
+		let observable = new Observable(function(observer) {
+			socket.on('winner', function(data) {
+				observer.next(data);
+			});
+		});
+
+		return observable;
+
+	}
+
 	startStop() {
 
 		this.socket.emit('startstop', {});

@@ -1,14 +1,16 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
 import { SocketService } from './socket.service';
 
 @Component({
 	selector: 'board',
 	styles: [``],
 	template: `
+		<div>
 		<canvas
 			(click)="onClick($event)"
 			#canvas
 		></canvas>
+		</div>
 	`
 })
 
@@ -172,7 +174,8 @@ export class BoardComponent implements OnInit, OnDestroy {
 		if (this.currentClicks.indexOf(cell.x + ' ' + cell.y) === -1) {
 			this.currentClicks.push(cell.x + ' ' + cell.y);
 			if (this.player === 1) {
-				if (this.boardArray[cell.y][cell.x] === 0) {
+				console.log(this.boardArray);
+				if ([0, 4, 5].indexOf(this.boardArray[cell.y][cell.x]) !== -1) {
 					this.drawCell(cellpx, ctx, grad, 'rgba(153,218,255,1)', 'rgba(153,218,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
 					// this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
 					// this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,0,224,1)', 'rgb(0, 0, 224)', 0.75);
@@ -182,7 +185,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 					this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(255,0,0,1)', 'rgb(255, 0, 0)', 0.75);
 				}
 			} else if (this.player === 2) {
-				if (this.boardArray[cell.y][cell.x] === 0) {
+				if ([0, 4, 5].indexOf(this.boardArray[cell.y][cell.x]) !== -1) {
 					this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(255,0,0,1)', 'rgb(255, 0, 0)', 0.75);
 				} else if (this.boardArray[cell.y][cell.x] === 1) {
 					this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(128,0,128,1)', 'rgb(128, 0, 128)', 0.75);
