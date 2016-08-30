@@ -4,30 +4,33 @@ import { SocketService } from './socket.service';
 @Component({
 	selector: 'score',
 	styles: [`
-		.playerscore {
+		* {
+			color: #eee;
+		}
+		.player1, .player2 {
+			text-align: center;
 			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%,-50%);
+			width: 30%;
+			margin: 0.3em;
+			font-size: 2em;
 		}
-		.player1box {
-			position: relative;
-			width: 25%;
-			float: left;
+		.player1 {
+			left: 10%;
 		}
-		.player2box {
-			position: relative;
-			width: 25%;
-			float: right;
+		.player2 {
+			left: 60%;
+		}
+		.score {
+			font-size: 3em;
 		}
 	`],
 	template: `
-		<div>
-			<div class="player1box">
-				<div class="playerscore">Player 1: {{playerOneScore}}</div>
+		<div class="scorebox">
+			<div class="player1">PLAYER 1 SCORE
+				<div class="score">{{playerOneScore}}</div>
 			</div>
-			<div class="player2box">
-				<div class="playerscore">Player 2: {{playerTwoScore}}</div>
+			<div class="player2">PLAYER 2 SCORE
+				<div class="score">{{playerTwoScore}}</div>
 			</div>
 		</div>
 	`
@@ -55,3 +58,13 @@ export class ScoreComponent {
 	}
 
 }
+
+
+		// <div>
+		// 	<div class="player1box">
+		// 		<div class="playerscore">Player 1: {{playerOneScore}}</div>
+		// 	</div>
+		// 	<div class="player2box">
+		// 		<div class="playerscore">Player 2: {{playerTwoScore}}</div>
+		// 	</div>
+		// </div>

@@ -20,9 +20,8 @@ var lastTime;
 var roundStarted = false;
 var boardSize = 0;
 var boardWidth = 40;
-var boardHeight = 20;
-var countdown = 5000;
-var speedSave = 0;
+var boardHeight = 18;
+var countdown = 0;
 
 function clearBoards() {
 
@@ -69,22 +68,22 @@ var io = require('socket.io')(server);
 
 // var PORT = process.env.port || 8000;
 
-var bodyParser = require("body-parser");
-var session = require('express-session');
+// var bodyParser = require("body-parser");
+// var session = require('express-session');
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({extended: false}));
+// app.use(bodyParser.json());
 
-app.use(session({
-	secret: "Secret Key",
-	resave: false,
-	saveUninitialized: false
-}));
+// app.use(session({
+// 	secret: "Secret Key",
+// 	resave: false,
+// 	saveUninitialized: false
+// }));
 
-app.use(function(req, res, next) {
-	console.log(req.url);
-	next();
-});
+// app.use(function(req, res, next) {
+// 	console.log(req.url);
+// 	next();
+// });
 
 io.on('connection', function(socket) {
 
@@ -100,7 +99,7 @@ io.on('connection', function(socket) {
 		console.log('user connected as player 2');
 	} else {
 		player = 0;
-	console.log('user connected as observer');
+		console.log('user connected as observer');
 	}
 
 	socket.on('disconnect', function() {
@@ -125,6 +124,29 @@ io.on('connection', function(socket) {
 		if (players.player2 === socket) {
 			running2 = !running2;
 		}
+	});
+
+	socket.on('updateoptions', function(options) {
+
+		gameType = parseInt(options.gametype, 10);
+		boardWidth = [40, 70, 100][parseInt(options.cellnum, 10)];
+		boardHeight = [18, 27, 45][parseInt(options.cellnum, 10)];
+		clearBoards();
+		clearInterval(interval);
+		speed = parseInt(options.speed, 10);
+		interval = setInterval(function() {
+			update();
+		}, speed);
+		gameLength = parseInt(options.length, 10);
+		boardDetails = {
+			currentBoard: displayBoard,
+			boardWidth: boardWidth,
+			boardHeight: boardHeight,
+			gameType: gameType
+		};
+
+		io.emit('optionschange', boardDetails);
+
 	});
 
 	socket.on('playerclick', function(posObj) {
@@ -157,6 +179,8 @@ io.on('connection', function(socket) {
 		running2 = false;
 		timer = gameLength;
 		countdown = 5000;
+		io.emit('gameclock', timer / 1000);
+		io.emit('winner', false);
 		io.emit('roundongoing', true);
 		io.emit('currentboard', [displayBoard, running, running2, playerOneScore, playerTwoScore]);
 
@@ -164,7 +188,7 @@ io.on('connection', function(socket) {
 
 });
 
-setInterval(function() {
+var interval = setInterval(function() {
 
 	update();
 

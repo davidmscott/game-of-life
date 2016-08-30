@@ -4,13 +4,19 @@ import { SocketService } from './socket.service';
 @Component({
 	selector: 'timer',
 	styles: [`
+		div {
+			font-size: 5em;
+			margin: 0.1em;
+			color: #eee;
+		}
 		.urgent {
 			font-weight: bold;
-			color: red;
+			color: #6E0300;
+			font-size: 6em;
 		}
 	`],
 	template: `
-		<div [class.urgent]="isUrgent">Timer: {{timer}}</div>
+		<div [class.urgent]="isUrgent">{{timer}}</div>
 	`
 })
 

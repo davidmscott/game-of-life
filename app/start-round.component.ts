@@ -6,6 +6,15 @@ import { SocketService } from './socket.service';
 	styles: [`
 		div {
 			background-color: green;
+			color: #111;
+			font-size: 3em;
+			font-weight: bold;
+			padding: 0.1em 0.2em;
+			border-radius: 0.4em;
+		}
+		.waiting {
+			width: 16em;
+			font-weight: normal;
 		}
 	`],
 	template: `
@@ -17,6 +26,7 @@ import { SocketService } from './socket.service';
 		</div>
 		<div
 			*ngIf="showWaitingMsg"
+			class="waiting"
 		>
 			Waiting for Player 1 to start round...
 		</div>

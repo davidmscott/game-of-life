@@ -21,6 +21,8 @@ export class BoardComponent implements OnInit, OnDestroy {
 	@ViewChild('canvas') canvas: ElementRef;
 
 	connection;
+	optionsConnection;
+	initialBoardConnection;
 	boardArray = [];
 	boardWidth;
 	boardHeight;
@@ -50,14 +52,16 @@ export class BoardComponent implements OnInit, OnDestroy {
 
 		document.addEventListener("keypress", this.onKeyUp);
 
-		this.socketService.socket.on('initialboard', function(data) {
+		this.initialBoardConnection = this.socketService.getInitialBoard().subscribe(function(data) {
 
 			this.boardArray = data[0].currentBoard;
 			this.boardWidth = data[0].boardWidth;
 			this.boardHeight = data[0].boardHeight;
 			this.canvasDraw();
 			this.drawAll(this.boardArray);
-			this.setPlayer(data[1]);
+			if (data[1]) {
+				this.setPlayer(data[1]);
+			}
 
 		}.bind(this));
 
@@ -67,8 +71,16 @@ export class BoardComponent implements OnInit, OnDestroy {
 
 		}.bind(this));
 
+		this.optionsConnection = this.socketService.optionsChange().subscribe(function(data) {
+
+			this.boardArray = data.currentBoard;
+			this.boardWidth = data.boardWidth;
+			this.boardHeight = data.boardHeight;
+			this.cellSize = this.boardWidthpx / this.boardWidth;
+
+		}.bind(this));
+
 		this.connection = this.socketService.getCurrentBoard().subscribe(function(data) {
-			console.log('currentboard');
 			this.boardArray = data[0];
 			this.drawAll(this.boardArray);
 
@@ -86,6 +98,8 @@ export class BoardComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 
 		this.connection.unsubscribe();
+		this.optionsConnection.unsubscribe();
+		this.initialBoardConnection.unsubscribe();
 
 	}
 
@@ -174,7 +188,6 @@ export class BoardComponent implements OnInit, OnDestroy {
 		if (this.currentClicks.indexOf(cell.x + ' ' + cell.y) === -1) {
 			this.currentClicks.push(cell.x + ' ' + cell.y);
 			if (this.player === 1) {
-				console.log(this.boardArray);
 				if ([0, 4, 5].indexOf(this.boardArray[cell.y][cell.x]) !== -1) {
 					this.drawCell(cellpx, ctx, grad, 'rgba(153,218,255,1)', 'rgba(153,218,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
 					// this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
@@ -205,7 +218,6 @@ export class BoardComponent implements OnInit, OnDestroy {
 		this.boardWidthpx = window.innerWidth;
 		this.boardHeightpx = window.innerWidth * this.boardHeight / this.boardWidth;
 		this.cellSize = this.boardWidthpx / this.boardWidth;
-		console.log(this.boardWidthpx, this.boardWidth, this.boardHeightpx, this.cellSize);
 		let ctx = this.canvas.nativeElement.getContext("2d");
 
 		this.canvas.nativeElement.width = this.boardWidthpx;

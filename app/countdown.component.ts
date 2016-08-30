@@ -5,7 +5,9 @@ import { SocketService } from './socket.service';
 	selector: 'countdown',
 	styles: [`
 		div {
-			color: white;
+			color: #eee;
+			font-size: 7em;
+			font-weight: bold;
 		}
 	`],
 	template: `

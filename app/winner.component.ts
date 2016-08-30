@@ -5,7 +5,11 @@ import { SocketService } from './socket.service';
 	selector: 'winner',
 	styles: [`
 		div {
-			color: white;
+			color: #eee;
+			font-weight: bold;
+			font-size: 8em;
+			text-align: center;
+			width: 20em;
 		}
 	`],
 	template: `

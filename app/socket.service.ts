@@ -29,6 +29,19 @@ export class SocketService {
 
 	}
 
+	getInitialBoard() {
+
+		let socket = this.socket;
+		let observable = new Observable(function(observer) {
+			socket.on('initialboard', function(data) {
+				observer.next(data);
+			});
+		});
+
+		return observable;
+
+	}
+
 	getTime() {
 
 		let socket = this.socket;
@@ -66,6 +79,26 @@ export class SocketService {
 		});
 
 		return observable;
+
+	}
+
+	optionsChange() {
+
+		let socket = this.socket;
+		let observable = new Observable(function(observer) {
+			socket.on('optionschange', function(data) {
+				observer.next(data);
+			});
+		});
+
+		return observable;
+
+	}
+
+
+	updateOptions(options) {
+
+		this.socket.emit('updateoptions', options);
 
 	}
 
