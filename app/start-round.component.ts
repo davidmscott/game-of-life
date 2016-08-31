@@ -5,12 +5,13 @@ import { SocketService } from './socket.service';
 	selector: 'start-round',
 	styles: [`
 		div {
-			background-color: green;
+			background-color: lightblue;
 			color: #111;
 			font-size: 3em;
 			font-weight: bold;
 			padding: 0.1em 0.2em;
 			border-radius: 0.4em;
+			box-shadow: 0 0 .4em .2em lightblue;
 		}
 		.waiting {
 			width: 16em;

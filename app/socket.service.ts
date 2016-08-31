@@ -6,7 +6,11 @@ declare var io: any;
 @Injectable()
 export class SocketService {
 
-	private url = 'http://localhost:8000';
+	private url = window.location.hostname + ':8000';
+
+	logThis() {
+		console.log(window.location.hostname);
+	}
 
 	socket;
 
@@ -87,6 +91,32 @@ export class SocketService {
 		let socket = this.socket;
 		let observable = new Observable(function(observer) {
 			socket.on('optionschange', function(data) {
+				observer.next(data);
+			});
+		});
+
+		return observable;
+
+	}
+
+	roundOngoing() {
+
+		let socket = this.socket;
+		let observable = new Observable(function(observer) {
+			socket.on('roundongoing', function(data) {
+				observer.next(data);
+			});
+		});
+
+		return observable;
+
+	}
+
+	resetClicks() {
+
+		let socket = this.socket;
+		let observable = new Observable(function(observer) {
+			socket.on('resetclicks', function(data) {
 				observer.next(data);
 			});
 		});

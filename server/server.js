@@ -15,7 +15,7 @@ var birthArray = [3];
 var liveArray = [3, 4];
 var speed = 100;
 var gameType = 2;
-var gameLength = 30000;
+var gameLength = 60000;
 var lastTime;
 var roundStarted = false;
 var boardSize = 0;
@@ -68,23 +68,6 @@ var io = require('socket.io')(server);
 
 // var PORT = process.env.port || 8000;
 
-// var bodyParser = require("body-parser");
-// var session = require('express-session');
-
-// app.use(bodyParser.urlencoded({extended: false}));
-// app.use(bodyParser.json());
-
-// app.use(session({
-// 	secret: "Secret Key",
-// 	resave: false,
-// 	saveUninitialized: false
-// }));
-
-// app.use(function(req, res, next) {
-// 	console.log(req.url);
-// 	next();
-// });
-
 io.on('connection', function(socket) {
 
 	var player;
@@ -124,26 +107,49 @@ io.on('connection', function(socket) {
 		if (players.player2 === socket) {
 			running2 = !running2;
 		}
+		socket.emit('resetclicks', true);
 	});
 
 	socket.on('updateoptions', function(options) {
 
-		gameType = parseInt(options.gametype, 10);
-		boardWidth = [40, 70, 100][parseInt(options.cellnum, 10)];
-		boardHeight = [18, 27, 45][parseInt(options.cellnum, 10)];
-		clearBoards();
-		clearInterval(interval);
-		speed = parseInt(options.speed, 10);
-		interval = setInterval(function() {
-			update();
-		}, speed);
-		gameLength = parseInt(options.length, 10);
-		boardDetails = {
-			currentBoard: displayBoard,
-			boardWidth: boardWidth,
-			boardHeight: boardHeight,
-			gameType: gameType
-		};
+		if (options) {
+
+			gameType = parseInt(options.gametype, 10);
+			boardSize = parseInt(options.cellnum, 10);
+			boardWidth = [40, 70, 100][parseInt(options.cellnum, 10)];
+			boardHeight = [18, 27, 45][parseInt(options.cellnum, 10)];
+			clearBoards();
+			clearInterval(interval);
+			speed = parseInt(options.speed, 10);
+			interval = setInterval(function() {
+				update();
+			}, speed);
+			gameLength = parseInt(options.length, 10);
+			boardDetails = {
+				currentBoard: displayBoard,
+				boardSize: boardSize,
+				boardWidth: boardWidth,
+				boardHeight: boardHeight,
+				gameType: gameType,
+				gameLength: gameLength,
+				speed: speed
+			};
+
+		} else {
+
+			boardDetails = {
+				currentBoard: displayBoard,
+				boardSize: boardSize,
+				boardWidth: boardWidth,
+				boardHeight: boardHeight,
+				gameType: gameType,
+				gameLength: gameLength,
+				speed: speed
+			};
+
+			io.emit('optionschange', boardDetails);
+
+		}
 
 		io.emit('optionschange', boardDetails);
 

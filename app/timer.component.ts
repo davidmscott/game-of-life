@@ -8,10 +8,11 @@ import { SocketService } from './socket.service';
 			font-size: 5em;
 			margin: 0.1em;
 			color: #eee;
+			text-shadow: 0 0 .05em;
 		}
 		.urgent {
 			font-weight: bold;
-			color: #6E0300;
+			color: #FF0000;
 			font-size: 6em;
 		}
 	`],
@@ -48,3 +49,5 @@ export class TimerComponent {
 	}
 
 }
+
+// 6E0300

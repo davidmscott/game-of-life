@@ -23,6 +23,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 	connection;
 	optionsConnection;
 	initialBoardConnection;
+	resetClicksConnection;
 	boardArray = [];
 	boardWidth;
 	boardHeight;
@@ -39,18 +40,24 @@ export class BoardComponent implements OnInit, OnDestroy {
 	currentClicks = [];
 	roundOngoing = false;
 
-	onKeyUp = function(evt) {
+	// onKeyUp = function(evt) {
 
-		if (evt.keyCode === 13) {
-			this.currentClicks = [];
-			this.socketService.startStop();
-		}
+	// 	if (evt.keyCode === 13) {
+	// 		this.currentClicks = [];
+	// 		this.socketService.startStop();
+	// 	}
 
-	}.bind(this);
+	// }.bind(this);
 
 	ngOnInit() {
 
-		document.addEventListener("keypress", this.onKeyUp);
+		// document.addEventListener("keypress", this.onKeyUp);
+
+		this.resetClicksConnection = this.socketService.resetClicks().subscribe(function(data) {
+
+			this.currentClicks = [];
+
+		}.bind(this));
 
 		this.initialBoardConnection = this.socketService.getInitialBoard().subscribe(function(data) {
 
@@ -121,8 +128,13 @@ export class BoardComponent implements OnInit, OnDestroy {
 		grad.addColorStop(1, rgba3);
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		ctx.fillStyle = grad;
-		ctx.shadowBlur = this.cellSize * glow;
-		ctx.shadowColor = rgb;
+		if (glow) {
+			ctx.shadowBlur = this.cellSize * glow;
+			ctx.shadowColor = rgb;
+		} else {
+			ctx.shadowBlur = 0;
+			ctx.shadowColor = '';
+		}
 		ctx.fillRect(cell.x + this.cellSize * 0.05, cell.y + this.cellSize * 0.05, this.cellSize * 0.9, this.cellSize * 0.9);
 	}
 
@@ -145,20 +157,20 @@ export class BoardComponent implements OnInit, OnDestroy {
 					if (data[y][x] === 1) {
 						this.drawCell(cell, ctx, grad, 'rgba(153,218,255,1)', 'rgba(153,218,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
 						// this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
-						// this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,0,224,1)', 'rgb(0, 0, 224)', 0.75);
 					} else if (data[y][x] === 2) {
 						this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(255,0,0,1)', 'rgb(255, 0, 0)', 0.75);
 					} else if (data[y][x] === 3) {
 						this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(128,0,128,1)', 'rgb(128, 0, 128)', 0.75);
 					} else if (data[y][x] === 4) {
-						this.drawCell(cell, ctx, grad, 'rgba(153,218,255,0.25)', 'rgba(153,218,255,0.25)', 'rgba(0,128,128,0.25)', 'rgb(0, 128, 128)', 0.25);
+						this.drawCell(cell, ctx, grad, 'rgba(153,218,255,0.25)', 'rgba(153,218,255,0.25)', 'rgba(0,128,128,0.25)', 'rgb(0, 128, 128)', false/*0.25*/);
 					} else if (data[y][x] === 5) {
-						this.drawCell(cell, ctx, grad, 'rgba(255,255,255,0.25)', 'rgba(255,255,255,0.25)', 'rgba(255,0,0,0.25)', 'rgb(255, 0, 0)', 0.25);
+						this.drawCell(cell, ctx, grad, 'rgba(255,255,255,0.25)', 'rgba(255,255,255,0.25)', 'rgba(255,0,0,0.25)', 'rgb(255, 0, 0)', false/*0.25*/);
 					}
 
 				}
 			}
 		}
+
 	}
 
 	onClick(evt) {

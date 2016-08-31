@@ -6,6 +6,7 @@ import { SocketService } from './socket.service';
 	styles: [`
 		* {
 			color: #eee;
+			text-shadow: 0 0 .05em;
 		}
 		.player1, .player2 {
 			text-align: center;
@@ -58,13 +59,3 @@ export class ScoreComponent {
 	}
 
 }
-
-
-		// <div>
-		// 	<div class="player1box">
-		// 		<div class="playerscore">Player 1: {{playerOneScore}}</div>
-		// 	</div>
-		// 	<div class="player2box">
-		// 		<div class="playerscore">Player 2: {{playerTwoScore}}</div>
-		// 	</div>
-		// </div>

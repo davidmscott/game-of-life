@@ -49,6 +49,6 @@ table {
 }
 
 * {
-	/*font-family: 'Press Start 2P', cursive;*/
 	font-family: 'helvetica';
+	cursor: default;
 }

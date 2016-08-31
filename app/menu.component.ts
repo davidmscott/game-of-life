@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SocketService } from './socket.service';
 
 @Component({
@@ -53,7 +53,7 @@ import { SocketService } from './socket.service';
 					[(ngModel)]="options.gametype"
 					(ngModelChange)="onChange($event)"
 				>
-						<option value="0" selected>Standard</option>
+						<option value="0">Standard</option>
 						<option value="1">Side Attack</option>
 						<option value="2">Territory</option>
 				</select>
@@ -70,7 +70,7 @@ import { SocketService } from './socket.service';
 					(ngModelChange)="onChange($event)"
 				>
 						<option value="0">Small</option>
-						<option value="1" selected>Medium</option>
+						<option value="1">Medium</option>
 						<option value="2">Large</option>
 				</select>
 			</td>
@@ -87,7 +87,7 @@ import { SocketService } from './socket.service';
 				>
 						<option value="1000">Very Slow</option>
 						<option value="500">Slow</option>
-						<option value="100" selected>Medium</option>
+						<option value="100">Medium</option>
 						<option value="60">Fast</option>
 						<option value="20">Very Fast</option>
 				</select>
@@ -103,7 +103,7 @@ import { SocketService } from './socket.service';
 				>
 						<option value="30000">30 Seconds</option>
 						<option value="45000">45 Seconds</option>
-						<option value="60000" selected>1 Minute</option>
+						<option value="60000">1 Minute</option>
 						<option value="120000">2 Minutes</option>
 						<option value="180000">3 Mintues</option>
 				</select>
@@ -113,16 +113,39 @@ import { SocketService } from './socket.service';
 	`
 })
 
-export class MenuComponent {
+export class MenuComponent implements OnInit, OnDestroy {
 
 	constructor(private socketService: SocketService) {}
 
 	options = {
-		gametype: 0,
-		cellnum: 1,
+		gametype: 2,
+		cellnum: 0,
 		speed: 100,
 		length: 60000
 	};
+
+	connection;
+
+	ngOnInit() {
+
+		this.connection = this.socketService.optionsChange().subscribe(function(data) {
+
+			this.options.gametype = data.gameType;
+			this.options.cellnum = data.boardSize;
+			this.options.speed = data.speed;
+			this.options.length = data.gameLength;
+
+		}.bind(this));
+
+		this.socketService.socket.emit('updateoptions', false);
+
+	}
+
+	ngOnDestroy() {
+
+		this.connection.unsubscribe();
+
+	}
 
 	onChange(evt) {
 

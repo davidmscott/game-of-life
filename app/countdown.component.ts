@@ -8,6 +8,7 @@ import { SocketService } from './socket.service';
 			color: #eee;
 			font-size: 7em;
 			font-weight: bold;
+			text-shadow: 0 0 2em lightblue;
 		}
 	`],
 	template: `

@@ -10,6 +10,7 @@ import { SocketService } from './socket.service';
 			font-size: 8em;
 			text-align: center;
 			width: 20em;
+			text-shadow: 0 0 .1em;
 		}
 	`],
 	template: `
