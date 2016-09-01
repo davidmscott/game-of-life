@@ -14,25 +14,25 @@ import { SocketService } from './socket.service';
 		}
 		td {
 			opacity: 0.8;
-			font-size: 1.5em;
-			text-shadow: 0 0 .02em;
-			padding: 1em;
+			font-size: 1.875vw;
+			text-shadow: 0 0 .025vw;
+			padding: 2vw;
 			vertical-align: middle;
 			background-color: #222;
 		}
 		caption {
-			font-size: 3em;
-			text-shadow: 0 0 .05em;
+			font-size: 3.75vw;
+			text-shadow: 0 0 .0625vw;
 			align: center;
 			color: #eee;
 			background-color: #222;
-			padding: 0.25em 0;
+			padding: 1vw;
 			border: 2px solid #eee;
 			border-bottom: none;
 		}
 		select {
 			float: right;
-			width: 7em;
+			width: 13.125vw;
 		}
 		select:focus {
 			outline: none;
@@ -41,7 +41,7 @@ import { SocketService } from './socket.service';
 			color: #eee;
 		}
 		div {
-			width: 8em;
+			width: 15vw;
 		}
 	`],
 	template: `

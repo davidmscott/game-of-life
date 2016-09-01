@@ -5,15 +5,15 @@ import { SocketService } from './socket.service';
 	selector: 'timer',
 	styles: [`
 		div {
-			font-size: 5em;
-			margin: 0.1em;
+			font-size: 6.25vw;
+			margin: 1vw;
 			color: #eee;
-			text-shadow: 0 0 .05em;
+			text-shadow: 0 0 .375vw;
 		}
 		.urgent {
 			font-weight: bold;
 			color: #FF0000;
-			font-size: 6em;
+			font-size: 7.5vw;
 		}
 	`],
 	template: `

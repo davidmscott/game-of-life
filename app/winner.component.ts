@@ -7,10 +7,10 @@ import { SocketService } from './socket.service';
 		div {
 			color: #eee;
 			font-weight: bold;
-			font-size: 8em;
+			font-size: 10vw;
 			text-align: center;
-			width: 20em;
-			text-shadow: 0 0 .1em;
+			width: 90vw;
+			text-shadow: 0 0 1vw;
 		}
 	`],
 	template: `

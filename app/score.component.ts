@@ -6,14 +6,14 @@ import { SocketService } from './socket.service';
 	styles: [`
 		* {
 			color: #eee;
-			text-shadow: 0 0 .05em;
 		}
 		.player1, .player2 {
 			text-align: center;
 			position: absolute;
 			width: 30%;
-			margin: 0.3em;
-			font-size: 2em;
+			margin: 1vw;
+			font-size: 2.5vw;
+			text-shadow: 0 0 0.125vw;
 		}
 		.player1 {
 			left: 10%;
@@ -22,7 +22,8 @@ import { SocketService } from './socket.service';
 			left: 60%;
 		}
 		.score {
-			font-size: 3em;
+			font-size: 7.5vw;
+			text-shadow: 0 0 0.375vw;
 		}
 	`],
 	template: `

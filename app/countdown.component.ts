@@ -6,9 +6,9 @@ import { SocketService } from './socket.service';
 	styles: [`
 		div {
 			color: #eee;
-			font-size: 7em;
+			font-size: 8.75vw;
 			font-weight: bold;
-			text-shadow: 0 0 2em lightblue;
+			text-shadow: 0 0 17.5vw lightblue;
 		}
 	`],
 	template: `

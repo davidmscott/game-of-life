@@ -36,8 +36,8 @@ declare var io: any; // this allows global variable to exist inside this file
 		}
 		#menubutton {
 			top: 100%;
-			width: 5em;
-			height: 5em;
+			width: 6.25vw;
+			height: 6.25vw;
 			background-size: cover;
 			background-image: url("./images/menu-icon-grey.png");
 		}
@@ -45,11 +45,11 @@ declare var io: any; // this allows global variable to exist inside this file
 			top: 100%;
 			right: 0%;
 			transform: translate(0%,0%);
-			width: 3.75em;
-			height: 3.75em;
+			width: 4.6875vw;
+			height: 4.6875vw;
 			background-size: cover;
-			margin-top: .5em;
-			margin-right: .5em;
+			margin-top: .625vw;
+			margin-right: .625vw;
 		}
 		#play {
 			background-image: url("./images/play-button.png");

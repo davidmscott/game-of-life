@@ -7,15 +7,16 @@ import { SocketService } from './socket.service';
 		div {
 			background-color: lightblue;
 			color: #222;
-			font-size: 3em;
+			font-size: 3.75vw;
 			font-weight: bold;
-			padding: 0.2em 0.3em;
-			border-radius: 0.4em;
-			box-shadow: 0 0 .4em .2em lightblue;
+			padding: 0.75vw 1.125vw;
+			border-radius: 1.5vw;
+			box-shadow: 0 0 1.875vw .9375vw lightblue;
 		}
 		.waiting {
-			width: 16em;
+			width: 65vw;
 			font-weight: normal;
+			text-align: center;
 		}
 	`],
 	template: `
