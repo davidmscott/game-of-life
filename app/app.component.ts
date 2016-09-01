@@ -10,10 +10,10 @@ declare var io: any; // this allows global variable to exist inside this file
 		#container {
 			position: relative;
 		}
-		canvas, menu, start-round, countdown, winner, timer, #menubutton, #play, #pause {
+		canvas, menu, start-round, countdown, winner, timer, #menubutton, #play, #pause, #onScreenPause {
 			position: absolute;
 		}
-		start-round, countdown {
+		start-round, countdown, #onScreenPause {
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%,-50%);
@@ -33,6 +33,14 @@ declare var io: any; // this allows global variable to exist inside this file
 			top: 100%;
 			left: 50%;
 			transform: translate(-50%,0%);
+		}
+		#onScreenPause {
+			pointer-events: none;
+			opacity: 0.2;
+			width: 30%;
+			height: 70%;
+			background-size: cover;
+			background-image: url("./images/pause-button.png");
 		}
 		#menubutton {
 			top: 100%;
@@ -69,6 +77,10 @@ declare var io: any; // this allows global variable to exist inside this file
 			<countdown></countdown>
 			<winner></winner>
 			<timer></timer>
+			<div
+				id="onScreenPause"
+				*ngIf="this.duringRound && !this.play"
+			></div>
 			<div
 				id="menubutton"
 				*ngIf="isPlayer1"
