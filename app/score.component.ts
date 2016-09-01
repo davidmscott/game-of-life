@@ -11,7 +11,7 @@ import { SocketService } from './socket.service';
 			text-align: center;
 			position: absolute;
 			width: 30%;
-			margin: 1vw;
+			margin: 1vw 0 0 0;
 			font-size: 2.5vw;
 			text-shadow: 0 0 0.125vw;
 		}
@@ -22,7 +22,7 @@ import { SocketService } from './socket.service';
 			left: 60%;
 		}
 		.score {
-			font-size: 7.5vw;
+			font-size: 7vw;
 			text-shadow: 0 0 0.375vw;
 		}
 	`],
