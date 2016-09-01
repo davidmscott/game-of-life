@@ -113,6 +113,7 @@ export class AppComponent implements OnInit, OnDestroy {
 	}.bind(this);
 
 	menuButtonClick() {
+		console.log("MENU BUTTON CLICK")
 
 		if (!this.duringRound && this.menuAvailable) {
 			if (this.showStart) {
@@ -127,6 +128,7 @@ export class AppComponent implements OnInit, OnDestroy {
 	}
 
 	pushPlay() {
+		console.log("PUSH PLAY")
 
 		if (this.duringRound && !this.isObserver) {
 			this.play = !this.play;
@@ -140,7 +142,7 @@ export class AppComponent implements OnInit, OnDestroy {
 		document.addEventListener("keypress", this.onKeyUp);
 
 		this.connection = this.socketService.getInitialBoard().subscribe(function(data) {
-
+			console.log("I AM PLAYERRRRr " + data[1]);
 			if (data[1] === 1) {
 				this.isPlayer1 = true;
 				this.isObserver = false;

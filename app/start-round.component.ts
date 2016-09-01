@@ -22,15 +22,15 @@ import { SocketService } from './socket.service';
 	template: `
 		<div
 			*ngIf="showStartButton"
-			(click)="startRound()"
+			(click)="startRound($event)"
 		>
-			Start Round
+			Start Rounddd
 		</div>
 		<div
 			*ngIf="showWaitingMsg"
 			class="waiting"
 		>
-			Waiting for Player 1 to start round...
+			Waiting for Player 1 to start round...dd
 		</div>
 	`
 })
@@ -47,9 +47,10 @@ export class StartRoundComponent implements OnInit, OnDestroy {
 	showWaitingMsg = false;
 	player1 = false;
 
-	startRound() {
-
-		this.socketService.socket.emit('begingame', {});
+	startRound(evt) {
+		console.log(evt);
+		console.log("BEGIN GAME. I AM PLAYER " + this.player1);
+		this.socketService.socket.emit('begingame', {player: this.player1});
 
 	}
 
@@ -67,7 +68,7 @@ export class StartRoundComponent implements OnInit, OnDestroy {
 		}.bind(this));
 
 		this.initialBoardConnection = this.socketService.getInitialBoard().subscribe(function(data) {
-
+			console.log("I AM PLAYER " + data[1]);
 			if (data[1] === 1) {
 				this.player1 = true;
 				this.showStartButton = true;
@@ -79,7 +80,7 @@ export class StartRoundComponent implements OnInit, OnDestroy {
 		}.bind(this));
 
 		this.countdownConnection = this.socketService.runCountdown().subscribe(function(data) {
-
+			console.log("RECIEVE RUN COUNTDOWN");
 			if (data) {
 				this.showStartButton = false;
 				this.showWaitingMsg = false;
