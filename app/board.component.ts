@@ -221,6 +221,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 					this.drawCell(cellpx, ctx, grad, 'rgba(153,218,255,1)', 'rgba(153,218,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
 				}
 			}
+
 			this.socketService.socket.emit('playerclick', {
 				x: cell.x,
 				y: cell.y

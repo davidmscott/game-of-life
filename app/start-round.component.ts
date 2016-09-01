@@ -24,13 +24,13 @@ import { SocketService } from './socket.service';
 			*ngIf="showStartButton"
 			(click)="startRound($event)"
 		>
-			Start Rounddd
+			Start Round
 		</div>
 		<div
 			*ngIf="showWaitingMsg"
 			class="waiting"
 		>
-			Waiting for Player 1 to start round...dd
+			Waiting for Player 1 to start round...
 		</div>
 	`
 })
@@ -48,8 +48,7 @@ export class StartRoundComponent implements OnInit, OnDestroy {
 	player1 = false;
 
 	startRound(evt) {
-		console.log(evt);
-		console.log("BEGIN GAME. I AM PLAYER " + this.player1);
+
 		this.socketService.socket.emit('begingame', {player: this.player1});
 
 	}
@@ -68,7 +67,7 @@ export class StartRoundComponent implements OnInit, OnDestroy {
 		}.bind(this));
 
 		this.initialBoardConnection = this.socketService.getInitialBoard().subscribe(function(data) {
-			console.log("I AM PLAYER " + data[1]);
+
 			if (data[1] === 1) {
 				this.player1 = true;
 				this.showStartButton = true;
@@ -80,7 +79,7 @@ export class StartRoundComponent implements OnInit, OnDestroy {
 		}.bind(this));
 
 		this.countdownConnection = this.socketService.runCountdown().subscribe(function(data) {
-			console.log("RECIEVE RUN COUNTDOWN");
+
 			if (data) {
 				this.showStartButton = false;
 				this.showWaitingMsg = false;
