@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SocketService } from './socket.service';
 
 @Component({
@@ -21,7 +21,7 @@ import { SocketService } from './socket.service';
 	`
 })
 
-export class WinnerComponent {
+export class WinnerComponent implements OnInit, OnDestroy {
 
 	constructor(private socketService: SocketService) {}
 

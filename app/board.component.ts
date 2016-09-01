@@ -9,6 +9,7 @@ import { SocketService } from './socket.service';
 		<canvas
 			(click)="onClick($event)"
 			#canvas
+			(window:resize)="onResize()"
 		></canvas>
 		</div>
 	`
@@ -24,6 +25,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 	optionsConnection;
 	initialBoardConnection;
 	resetClicksConnection;
+	roundOngoingConnection;
 	boardArray = [];
 	boardWidth;
 	boardHeight;
@@ -40,18 +42,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 	currentClicks = [];
 	roundOngoing = false;
 
-	// onKeyUp = function(evt) {
-
-	// 	if (evt.keyCode === 13) {
-	// 		this.currentClicks = [];
-	// 		this.socketService.startStop();
-	// 	}
-
-	// }.bind(this);
-
 	ngOnInit() {
-
-		// document.addEventListener("keypress", this.onKeyUp);
 
 		this.resetClicksConnection = this.socketService.resetClicks().subscribe(function(data) {
 
@@ -72,7 +63,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
 		}.bind(this));
 
-		this.socketService.socket.on('roundongoing', function(data) {
+		this.roundOngoingConnection = this.socketService.roundOngoing().subscribe(function(data) {
 
 			this.roundOngoing = data;
 
@@ -88,6 +79,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 		}.bind(this));
 
 		this.connection = this.socketService.getCurrentBoard().subscribe(function(data) {
+
 			this.boardArray = data[0];
 			this.drawAll(this.boardArray);
 
@@ -107,6 +99,15 @@ export class BoardComponent implements OnInit, OnDestroy {
 		this.connection.unsubscribe();
 		this.optionsConnection.unsubscribe();
 		this.initialBoardConnection.unsubscribe();
+		this.resetClicksConnection.unsubscribe();
+		this.roundOngoingConnection.unsubscribe();
+
+	}
+
+	onResize() {
+
+		this.canvasDraw();
+		this.drawAll(this.boardArray);
 
 	}
 
@@ -122,6 +123,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 	}
 
 	drawCell(cell, ctx, grad, rgba1, rgba2, rgba3, rgb, glow) {
+
 		grad = ctx.createRadialGradient(this.cellSize / 2 + cell.x, this.cellSize / 2 + cell.y, 0, this.cellSize / 2 + cell.x, this.cellSize / 2 + cell.y, 141.42 / 200 * this.cellSize);
 		grad.addColorStop(0, rgba1);
 		grad.addColorStop(0.1, rgba2);
@@ -136,6 +138,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 			ctx.shadowColor = '';
 		}
 		ctx.fillRect(cell.x + this.cellSize * 0.05, cell.y + this.cellSize * 0.05, this.cellSize * 0.9, this.cellSize * 0.9);
+
 	}
 
 	drawAll(data) {
@@ -148,6 +151,9 @@ export class BoardComponent implements OnInit, OnDestroy {
 		for (var y = 0; y < data.length; y++) {
 			for (var x = 0; x < data[y].length; x++) {
 
+				if (y === 0 && x === 0) {
+				}
+
 				if (data[y][x] !== 0) {
 					let cell = {
 						x: (x * this.cellSize),
@@ -156,7 +162,6 @@ export class BoardComponent implements OnInit, OnDestroy {
 
 					if (data[y][x] === 1) {
 						this.drawCell(cell, ctx, grad, 'rgba(153,218,255,1)', 'rgba(153,218,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
-						// this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
 					} else if (data[y][x] === 2) {
 						this.drawCell(cell, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(255,0,0,1)', 'rgb(255, 0, 0)', 0.75);
 					} else if (data[y][x] === 3) {
@@ -202,8 +207,6 @@ export class BoardComponent implements OnInit, OnDestroy {
 			if (this.player === 1) {
 				if ([0, 4, 5].indexOf(this.boardArray[cell.y][cell.x]) !== -1) {
 					this.drawCell(cellpx, ctx, grad, 'rgba(153,218,255,1)', 'rgba(153,218,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
-					// this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,128,128,1)', 'rgb(0, 128, 128)', 0.75);
-					// this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(0,0,224,1)', 'rgb(0, 0, 224)', 0.75);
 				} else if (this.boardArray[cell.y][cell.x] === 2) {
 					this.drawCell(cellpx, ctx, grad, 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', 'rgba(128,0,128,1)', 'rgb(128, 0, 128)', 0.75);
 				} else if (this.boardArray[cell.y][cell.x] === 3) {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SocketService } from './socket.service';
 
 @Component({
@@ -19,7 +19,7 @@ import { SocketService } from './socket.service';
 	`
 })
 
-export class CountdownComponent {
+export class CountdownComponent implements OnInit, OnDestroy {
 
 	constructor(private socketService: SocketService) {}
 

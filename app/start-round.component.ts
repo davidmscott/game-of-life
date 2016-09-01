@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SocketService } from './socket.service';
 
 @Component({
@@ -6,10 +6,10 @@ import { SocketService } from './socket.service';
 	styles: [`
 		div {
 			background-color: lightblue;
-			color: #111;
+			color: #222;
 			font-size: 3em;
 			font-weight: bold;
-			padding: 0.1em 0.2em;
+			padding: 0.2em 0.3em;
 			border-radius: 0.4em;
 			box-shadow: 0 0 .4em .2em lightblue;
 		}
@@ -34,16 +34,17 @@ import { SocketService } from './socket.service';
 	`
 })
 
-export class StartRoundComponent {
+export class StartRoundComponent implements OnInit, OnDestroy {
 
 	constructor(private socketService: SocketService) {}
 
 	connection;
+	initialBoardConnection;
+	countdownConnection;
 
 	showStartButton = false;
 	showWaitingMsg = false;
-
-	player1 = true;
+	player1 = false;
 
 	startRound() {
 
@@ -64,7 +65,7 @@ export class StartRoundComponent {
 
 		}.bind(this));
 
-		this.socketService.socket.on('initialboard', function(data) {
+		this.initialBoardConnection = this.socketService.getInitialBoard().subscribe(function(data) {
 
 			if (data[1] === 1) {
 				this.player1 = true;
@@ -76,7 +77,7 @@ export class StartRoundComponent {
 
 		}.bind(this));
 
-		this.socketService.socket.on('roundongoing', function(data) {
+		this.countdownConnection = this.socketService.runCountdown().subscribe(function(data) {
 
 			if (data) {
 				this.showStartButton = false;
@@ -84,11 +85,15 @@ export class StartRoundComponent {
 			}
 
 		}.bind(this));
+
 	}
 
 	ngOnDestroy() {
 
 		this.connection.unsubscribe();
+		this.initialBoardConnection.unsubscribe();
+		this.countdownConnection.unsubscribe();
+
 	}
 
 

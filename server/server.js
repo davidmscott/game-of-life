@@ -100,7 +100,7 @@ io.on('connection', function(socket) {
 
 	socket.emit('initialboard', [boardDetails, player]);
 
-	socket.on('startstop', function() {
+	socket.on('startstop', function(data) {
 		if (players.player1 === socket) {
 			running = !running;
 		}
@@ -160,17 +160,17 @@ io.on('connection', function(socket) {
 		if (players.player1 === socket) {
 			if (currentBoard[posObj.y][posObj.x] === 0) {
 				currentBoard[posObj.y][posObj.x] = 1;
-			} else {
-				currentBoard[posObj.y][posObj.x] = 0;
-			}
+			} //else {
+				//currentBoard[posObj.y][posObj.x] = 0;
+			//}
 		}
 
 		if (players.player2 === socket) {
 			if (currentBoard2[posObj.y][posObj.x] === 0) {
 				currentBoard2[posObj.y][posObj.x] = 1;
-			} else {
-				currentBoard2[posObj.y][posObj.x] = 0;
-			}
+			} // else {
+				//currentBoard2[posObj.y][posObj.x] = 0;
+			//}
 		}
 
 	});
@@ -185,9 +185,10 @@ io.on('connection', function(socket) {
 		running2 = false;
 		timer = gameLength;
 		countdown = 5000;
+		io.emit('menuavailable', false);
+		io.emit('resetclicks', true);
 		io.emit('gameclock', timer / 1000);
 		io.emit('winner', false);
-		io.emit('roundongoing', true);
 		io.emit('currentboard', [displayBoard, running, running2, playerOneScore, playerTwoScore]);
 
 	});
@@ -203,6 +204,7 @@ var interval = setInterval(function() {
 function update() {
 
 	roundCountdown();
+
 	if (countdown) {
 		return;
 	}
@@ -222,6 +224,7 @@ function update() {
 				running = false;
 				running2 = false;
 				roundStarted = false;
+				io.emit('menuavailable', true);
 				io.emit('roundongoing', false);
 				roundOutcome();
 			}
@@ -394,6 +397,7 @@ function roundCountdown() {
 	if (countdown) {
 		if (countdown <= 1000) {
 			io.emit('countdown', false);
+			io.emit('roundongoing', true);
 			countdown = 0;
 			return;
 		} else if (countdown <= 2000) {

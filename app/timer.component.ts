@@ -21,7 +21,7 @@ import { SocketService } from './socket.service';
 	`
 })
 
-export class TimerComponent {
+export class TimerComponent implements OnInit, OnDestroy {
 
 	constructor(private socketService: SocketService) {}
 
@@ -41,13 +41,13 @@ export class TimerComponent {
 			}
 
 		}.bind(this));
+
 	}
 
 	ngOnDestroy() {
 
 		this.connection.unsubscribe();
+
 	}
 
 }
-
-// 6E0300

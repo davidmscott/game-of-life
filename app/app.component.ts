@@ -72,7 +72,7 @@ declare var io: any; // this allows global variable to exist inside this file
 			<div
 				id="menubutton"
 				*ngIf="isPlayer1"
-				(click)="click()"
+				(click)="menuButtonClick()"
 			></div>
 			<div
 				id="pause"
@@ -94,12 +94,15 @@ export class AppComponent implements OnInit, OnDestroy {
 	constructor(private socketService: SocketService) {}
 
 	isPlayer1 = false;
+	isObserver = true;
 	showMenu = false;
 	showStart = true;
+	menuAvailable = true;
 	play = false;
 	duringRound = false;
 	connection;
 	roundConnection;
+	menuOffConnection;
 
 	onKeyUp = function(evt) {
 
@@ -109,8 +112,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
 	}.bind(this);
 
-	click() {
-		if (!this.duringRound) {
+	menuButtonClick() {
+
+		if (!this.duringRound && this.menuAvailable) {
 			if (this.showStart) {
 				this.showMenu = true;
 				this.showStart = false;
@@ -119,11 +123,12 @@ export class AppComponent implements OnInit, OnDestroy {
 				this.showStart = true;
 			}
 		}
+
 	}
 
 	pushPlay() {
 
-		if (this.duringRound) {
+		if (this.duringRound && !this.isObserver) {
 			this.play = !this.play;
 			this.socketService.startStop();
 		}
@@ -138,6 +143,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
 			if (data[1] === 1) {
 				this.isPlayer1 = true;
+				this.isObserver = false;
+			} else if (data[1] === 0) {
+				this.isObserver = true;
+			} else {
+				this.isObserver = false;
 			}
 
 		}.bind(this));
@@ -151,11 +161,19 @@ export class AppComponent implements OnInit, OnDestroy {
 
 		}.bind(this));
 
+		this.menuOffConnection = this.socketService.menuOffAtCountdown().subscribe(function(data) {
+
+			this.menuAvailable = data;
+
+		}.bind(this));
+
 	}
 
 	ngOnDestroy() {
 
 		this.connection.unsubscribe();
+		this.roundConnection.unsubscribe();
+		this.menuOffConnection.unsubscribe();
 
 	}
 

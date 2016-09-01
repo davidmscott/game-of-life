@@ -37,7 +37,7 @@ import { SocketService } from './socket.service';
 	`
 })
 
-export class ScoreComponent {
+export class ScoreComponent implements OnInit, OnDestroy {
 
 	constructor(private socketService: SocketService) {}
 
@@ -48,9 +48,12 @@ export class ScoreComponent {
 	ngOnInit() {
 
 		this.connection = this.socketService.getCurrentBoard().subscribe(function(data) {
+
 			this.playerOneScore = data[3];
 			this.playerTwoScore = data[4];
+
 		}.bind(this));
+
 	}
 
 	ngOnDestroy() {

@@ -8,10 +8,6 @@ export class SocketService {
 
 	private url = window.location.hostname + ':8000';
 
-	logThis() {
-		console.log(window.location.hostname);
-	}
-
 	socket;
 
 	constructor() {
@@ -72,6 +68,18 @@ export class SocketService {
 
 	}
 
+	menuOffAtCountdown() {
+
+		let socket = this.socket;
+		let observable = new Observable(function(observer) {
+			socket.on('menuavailable', function(data) {
+				observer.next(data);
+			});
+		});
+
+		return observable;
+
+	}
 
 	winnerIs() {
 
@@ -134,7 +142,7 @@ export class SocketService {
 
 	startStop() {
 
-		this.socket.emit('startstop', {});
+		this.socket.emit('startstop', true);
 
 	}
 

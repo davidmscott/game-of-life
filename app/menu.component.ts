@@ -4,22 +4,28 @@ import { SocketService } from './socket.service';
 @Component({
 	selector: 'menu',
 	styles: [`
+		{
+			background-color: #222;
+		}
 		table {
-			background-color: #111;
 			border: 2px solid #eee;
 			border-collapse: collapse;
+			background-color: #222;
 		}
 		td {
 			opacity: 0.8;
 			font-size: 1.5em;
+			text-shadow: 0 0 .02em;
 			padding: 1em;
 			vertical-align: middle;
+			background-color: #222;
 		}
 		caption {
 			font-size: 3em;
+			text-shadow: 0 0 .05em;
 			align: center;
 			color: #eee;
-			background-color: #111;
+			background-color: #222;
 			padding: 0.25em 0;
 			border: 2px solid #eee;
 			border-bottom: none;
@@ -137,7 +143,7 @@ export class MenuComponent implements OnInit, OnDestroy {
 
 		}.bind(this));
 
-		this.socketService.socket.emit('updateoptions', false);
+		this.socketService.socket.emit('updateoptions', false); // not sure why this is here
 
 	}
 
