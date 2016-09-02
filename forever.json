@@ -2,7 +2,7 @@
 	"uid": "app",
 	"append": true,
 	"watch": true,
-	"script": "npm start",
+	"script": "\"npm start\"",
 
 	// {
 	// "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" \"npm run socket\" ",
