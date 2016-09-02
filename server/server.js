@@ -175,9 +175,7 @@ io.on('connection', function(socket) {
 
 	});
 
-	socket.on('begingame', function(obj) {
-
-		console.log("RECIEVED BEGIN GAME FROM " + obj.player);
+	socket.on('begingame', function() {
 
 		clearBoards();
 		roundStarted = true;
