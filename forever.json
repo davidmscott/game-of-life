@@ -2,14 +2,16 @@
 	"uid": "app",
 	"append": true,
 	"watch": true,
-	"script": {
-	"start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" \"npm run socket\" ",
-	"lite": "lite-server",
-	"postinstall": "typings install",
-	"tsc": "tsc",
-	"tsc:w": "tsc -w",
-	"typings": "typings",
-	"socket": "nodemon ./server/server.js"
-	},
+	"script": "npm start",
+
+	// {
+	// "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" \"npm run socket\" ",
+	// "lite": "lite-server",
+	// "postinstall": "typings install",
+	// "tsc": "tsc",
+	// "tsc:w": "tsc -w",
+	// "typings": "typings",
+	// "socket": "nodemon ./server/server.js"
+	// },
 	"sourceDir": "/home/myuser/app"
 }
