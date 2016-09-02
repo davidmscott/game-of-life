@@ -13,5 +13,5 @@
 	// "typings": "typings",
 	// "socket": "nodemon ./server/server.js"
 	// },
-	"sourceDir": "/home/myuser/app"
+	"sourceDir": "./"
 }
