@@ -1,0 +1,23 @@
+[
+	{
+		"uid": "tsc",
+		"append": true,
+		"watch": true,
+		"script": "\"npm run tsc:w\"",
+		"sourceDir": "/game-of-life"
+	},
+	{
+		"uid": "lite-server",
+		"append": true,
+		"watch": true,
+		"script": "\"npm run lite-server\"",
+		"sourceDir": "/game-of-life"
+	},
+	{
+		"uid": "socket",
+		"append": true,
+		"watch": true,
+		"script": "\"npm run nodemon ./server/server.js\"",
+		"sourceDir": "/game-of-life"
+	}
+]
